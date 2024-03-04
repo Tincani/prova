@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorizzazione dati con eliminazione</title>
+</head>
+<body>
+    <h1>Memorizzazione dati con eliminazione</h1>
+
+    <div>
+        <input type="text" id="inputStringa" placeholder="Inserisci una stringa">
+        <button onclick="aggiungiStringa()">Aggiungi</button>
+    </div>
+
+    <div>
+        <h2>Valori inseriti:</h2>
+        <ul id="listaValori">
+            <!-- Qui verranno inseriti i valori dalla logica JavaScript -->
+        </ul>
+    </div>
+
+    <script>
+        // Funzione per aggiungere una stringa alla lista dei valori
+        function aggiungiStringa() {
+            var input = document.getElementById('inputStringa');
+            var valore = input.value.trim();
+            if (valore !== '') {
+                var listaValori = JSON.parse(localStorage.getItem('listaValori')) || [];
+                listaValori.push(valore);
+                localStorage.setItem('listaValori', JSON.stringify(listaValori));
+                aggiornaListaValori();
+                input.value = ''; // Cancella il campo di input dopo l'aggiunta
+            }
+        }
+
+        // Funzione per aggiornare la lista dei valori
+        function aggiornaListaValori() {
+            var listaValori = JSON.parse(localStorage.getItem('listaValori')) || [];
+            var listaElementi = document.getElementById('listaValori');
+            listaElementi.innerHTML = ''; // Pulisce la lista prima di aggiornarla
+            listaValori.forEach(function(valore, index) {
+                var li = document.createElement('li');
+                li.textContent = valore;
+                
+                // Aggiunge un pulsante di eliminazione per ciascun valore
+                var button = document.createElement('button');
+                button.textContent = 'Elimina';
+                button.onclick = function() {
+                    eliminaValore(index);
+                };
+                li.appendChild(button);
+                
+                listaElementi.appendChild(li);
+            });
+        }
+
+        // Funzione per eliminare un valore dalla lista
+        function eliminaValore(index) {
+            var listaValori = JSON.parse(localStorage.getItem('listaValori')) || [];
+            listaValori.splice(index, 1); // Rimuove l'elemento dall'array
+            localStorage.setItem('listaValori', JSON.stringify(listaValori));
+            aggiornaListaValori(); // Aggiorna la visualizzazione
+        }
+
+        // Aggiorna la lista dei valori all'avvio dello script
+        aggiornaListaValori();
+    </script>
+</body>
+</html>
